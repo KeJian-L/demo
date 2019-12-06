@@ -12,7 +12,7 @@ public class Column {
     private String length;
     private String comment;
     private String defaultValue = null;
-    private Boolean isNull = false;
+    private Boolean notNull = false;
 
     public String getName() {
         return name;
@@ -54,11 +54,11 @@ public class Column {
         this.defaultValue = defaultValue;
     }
 
-    public Boolean getNull() {
-        return isNull;
+    public Boolean getNotNull() {
+        return notNull;
     }
 
-    public void setNull(Boolean aNull) {
-        isNull = aNull;
+    public void setNotNull(Boolean notNull) {
+        this.notNull = notNull;
     }
 }

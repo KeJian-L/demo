@@ -4,15 +4,10 @@ import com.example.entity.Column;
 import com.example.entity.Table;
 import com.example.mapper.TableMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import java.sql.Date;
-import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @Author: KjLi
@@ -42,8 +37,31 @@ public class ExampleController {
         return tableMapper.tableInfo(database);
     }
 
-    @PostMapping("/createTable")
+    @GetMapping("/createTable")
     public void createTable() {
+        Table table = new Table();
+        table.setName("test2");
+        table.setComment("生成测试");
+        table.setDatabaseName("test");
 
+        Column column1 = new Column();
+        column1.setName("name");
+        column1.setLength("16");
+        column1.setDefaultValue("张三");
+        column1.setType("varchar");
+
+        Column column2 = new Column();
+        column2.setName("age");
+        column2.setLength("3");
+        column2.setType("int");
+        column2.setNotNull(true);
+
+        List columns = new ArrayList();
+        columns.add(column1);
+        columns.add(column2);
+
+        table.setColumns(columns);
+
+        tableMapper.createTable(table);
     }
 }

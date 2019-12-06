@@ -1,6 +1,5 @@
 package com.example.entity;
 
-import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.List;
 
@@ -11,14 +10,22 @@ import java.util.List;
  * @Modified By:
  */
 public class Table {
-
     private String name;
+    private String databaseName;
     private String comment;
     private Integer count;
     private Long dataLength;
     private Timestamp createTime;
     private Timestamp updateTime;
     private List<Column> columns;
+
+    public String getDatabaseName() {
+        return databaseName;
+    }
+
+    public void setDatabaseName(String databaseName) {
+        this.databaseName = databaseName;
+    }
 
     public Integer getCount() {
         return count;

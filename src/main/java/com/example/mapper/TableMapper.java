@@ -2,8 +2,8 @@ package com.example.mapper;
 
 import com.example.entity.Column;
 import com.example.entity.Table;
-import javafx.scene.control.Tab;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 import org.springframework.stereotype.Repository;
@@ -35,6 +35,7 @@ public interface TableMapper {
             "data_length," +
             "create_time," +
             "update_time," +
+            "table_schema as database_name," +
             "table_comment as comment " +
             "from information_schema.tables " +
             "where table_schema=#{database}")
@@ -43,6 +44,16 @@ public interface TableMapper {
     @Select("show databases")
     List<String> showDatabase();
 
-    @Update("create table ")
-    void createTable(Table table);
+   /* @Update("create table #{table.databaseName}.#{table.name} (" +
+            "id int," +
+            "<foreach item='item' collection='columns' separator=','>" +
+            "${item.name} ${item.type}(${item.length}) " +
+            "default #{item.defaultValue,jdbcType=VARCHAR} " +
+            "<if test='item.notNull'>" +
+            "not null" +
+            "</if>" +
+            "comment #{item.comment,jdbcType=VARCHAR}" +
+            "</foreach>" +
+            ")")*/
+    void createTable(@Param("table") Table table);
 }
