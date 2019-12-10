@@ -44,16 +44,22 @@ public interface TableMapper {
     @Select("show databases")
     List<String> showDatabase();
 
-   /* @Update("create table #{table.databaseName}.#{table.name} (" +
-            "id int," +
-            "<foreach item='item' collection='columns' separator=','>" +
-            "${item.name} ${item.type}(${item.length}) " +
-            "default #{item.defaultValue,jdbcType=VARCHAR} " +
-            "<if test='item.notNull'>" +
-            "not null" +
+    @Update("<script>" +
+            "create table ${table.databaseName}.${table.name} (" +
+            "id int NOT NULL AUTO_INCREMENT PRIMARY KEY," +
+            "<foreach item=\"column\" collection=\"table.columns\" index=\"index\" separator=\",\">" +
+            "${column.name} ${column.type}(${column.length}) " +
+            "<if test=\"column.defaultValue!=null and column.defaultValue.length>0\">" +
+            " default #{column.defaultValue,jdbcType=VARCHAR}" +
             "</if>" +
-            "comment #{item.comment,jdbcType=VARCHAR}" +
+            "<if test=\"column.notNull\">" +
+            " not null" +
+            "</if>" +
+            "<if test=\"column.comment!=null and column.comment.length>0\">"+
+            " comment #{column.comment,jdbcType=VARCHAR}" +
+            "</if>" +
             "</foreach>" +
-            ")")*/
+            ")" +
+            "</script>")
     void createTable(@Param("table") Table table);
 }

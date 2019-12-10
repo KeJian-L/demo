@@ -19,7 +19,7 @@ import java.util.List;
 public class ExampleController {
 
     @Autowired
-    TableMapper tableMapper;
+    private TableMapper tableMapper;
 
     @GetMapping("/tableColumnInfo")
     public List<Column> tableColumnInfo(@RequestParam("database") String database,
