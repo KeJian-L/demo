@@ -2,10 +2,7 @@ package com.example.mapper;
 
 import com.example.entity.Column;
 import com.example.entity.Table;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
+import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -62,4 +59,10 @@ public interface TableMapper {
             ")" +
             "</script>")
     void createTable(@Param("table") Table table);
+
+    @Update("drop database ${databaseName}")
+    void deleteDatabase(String databaseName);
+
+    @Update("drop table ${databaseName}.${tableName}")
+    void deleteTable(String databaseName,String tableName);
 }

@@ -7,9 +7,11 @@ import com.example.service.ITableService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Author: KjLi
@@ -21,57 +23,57 @@ import java.util.List;
 public class ExampleController {
 
     @Autowired
-    private TableMapper tableMapper;
-
-    @Autowired
     private ITableService tableService;
 
     @GetMapping("/tableColumnInfo")
     public List<Column> tableColumnInfo(@RequestParam("database") String database,
-                                  @RequestParam("tableName") String tableName) {
-        return tableMapper.tableColumnInfo(database, tableName);
+                                        @RequestParam("tableName") String tableName, HttpServletResponse response) {
+        if (database == null || database.length()==0 || tableName == null || tableName.length()==0) {
+            response.setStatus(400);
+            response.setHeader("x-message", "请求参数缺失");
+            return null;
+        } else {
+            return tableService.tableColumnInfo(database, tableName);
+        }
     }
 
     @GetMapping("showDatabase")
     public List<String> showDatabase() {
-        return tableMapper.showDatabase();
+        return tableService.showDatabase();
     }
 
     @GetMapping("/tableInfo")
-    public List<Table> tableInfo(@RequestParam("database") String database){
-        return tableMapper.tableInfo(database);
+    public List<Table> tableInfo(@RequestParam("database") String database, HttpServletResponse response) {
+        if (database == null || database.length()==0) {
+            response.setStatus(400);
+            response.setHeader("x-message", "请求参数缺失");
+            return null;
+        } else {
+            return tableService.tableInfo(database);
+        }
+
     }
 
-    @GetMapping("/createTable")
-    public void createTable(@RequestBody Table table) {
-//        Table table = new Table();
-//        table.setName("test2");
-//        table.setComment("生成测试");
-//        table.setDatabaseName("test");
-//
-//        Column column1 = new Column();
-//        column1.setName("name");
-//        column1.setLength("16");
-//        column1.setDefaultValue("张三");
-//        column1.setType("varchar");
-//
-//        Column column2 = new Column();
-//        column2.setName("age");
-//        column2.setLength("3");
-//        column2.setType("int");
-//        column2.setNotNull(true);
-//
-//        List columns = new ArrayList();
-//        columns.add(column1);
-//        columns.add(column2);
-//
-//        table.setColumns(columns);
-        tableMapper.createTable(table);
+    @PostMapping("/createTable")
+    public void createTable(@RequestBody Table table, HttpServletResponse response) {
+        if (table == null || table.getDatabaseName() == null || table.getName() == null) {
+            response.setStatus(400);
+            response.setHeader("x-message", "请求参数缺失");
+            return;
+        } else {
+            tableService.createTable(table);
+        }
     }
 
-    @GetMapping("/deleteTable")
-    public void deleteTable(){
-        tableService.databaseBackup("101.200.132.222","3306","root","mymxdxy!@#", Arrays.asList("test"));
+    @PostMapping("/deleteTable")
+    public void deleteTable(@RequestBody Map<String, String> body, HttpServletResponse response) {
+        if (body == null || body.size() == 0 || !body.containsKey("databaseName") || !body.containsKey("tableName")) {
+            response.setStatus(400);
+            response.setHeader("x-message", "请求参数缺失");
+            return;
+        } else {
+            tableService.deleteTable(body.get("databaseName"), body.get("tableName"));
+        }
     }
 
 }
