@@ -87,4 +87,14 @@ public class ExampleController {
         }
     }
 
+    @PostMapping("/deleteDatabase")
+    public void deleteDatabase(@RequestBody Map<String, String> body, HttpServletResponse response){
+        if (body == null || body.size() == 0 || !body.containsKey("databaseName")) {
+            response.setStatus(400);
+            response.setHeader("x-message", "请求参数缺失");
+            return;
+        }else {
+            tableService.deleteDatabase(body.get("databaseName"));
+        }
+    }
 }
