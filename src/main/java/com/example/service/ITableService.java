@@ -1,5 +1,7 @@
 package com.example.service;
 
+import java.util.List;
+
 /**
  * @Author: KjLi
  * @Description:
@@ -8,7 +10,7 @@ package com.example.service;
  */
 public interface ITableService {
 
-    void databaseBackup(String databaseName);
+    void databaseBackup(String ip, String port, String username, String password, List<String> databaseList);
 
-    void tableBackup();
+    void tableBackup(String ip,String port,String username,String password,String databaseName,List<String> tableName);
 }

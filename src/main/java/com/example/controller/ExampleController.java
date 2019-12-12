@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -70,7 +71,7 @@ public class ExampleController {
 
     @GetMapping("/deleteTable")
     public void deleteTable(){
-        tableService.databaseBackup("test");
+        tableService.databaseBackup("101.200.132.222","3306","root","mymxdxy!@#", Arrays.asList("test"));
     }
 
 }

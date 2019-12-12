@@ -1,10 +1,12 @@
 package com.example.service;
 
 import com.example.util.LocalConfig;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
 
 /**
  * @Author: KjLi
@@ -15,24 +17,45 @@ import java.io.*;
 @Service
 public class TableService implements ITableService {
 
-    public void databaseBackup(String databaseName) {
-        String savePath = "C:\\Users\\L\\Desktop";
-        File saveFile = new File(savePath);
+    public void databaseBackup(String ip, String port, String username, String password, List<String> databaseList) {
+        SimpleDateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
+        String sqlFileName = databaseList.get(0) + "-" + df.format(new Date()) + ".sql";
+        String mysqldumpFilePath = LocalConfig.getValue("file.path.mysqldump");
+        String databaseName = "";
+        for (String database:databaseList) {
+            databaseName+=" "+database;
+        }
+        String instruct = mysqldumpFilePath + "mysqldump -h" + ip + " -p" + port +
+                " -u" + username + " -p" + password + " --set-charset=UTF8 --column-statistics=0 --databases" + databaseName;
+        backup(instruct,sqlFileName);
+    }
+
+    public void tableBackup(String ip, String port, String username, String password, String databaseName, List<String> tableList) {
+        SimpleDateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
+        String sqlFileName = databaseName + "-" + tableList.get(0) + "-" + df.format(new Date()) + ".sql";
+        String mysqldumpFilePath = LocalConfig.getValue("file.path.mysqldump");
+        String tableName = "";
+        for (String table:tableList) {
+            tableName+=" "+table;
+        }
+        String instruct = mysqldumpFilePath + "mysqldump -h" + ip + " -p" + port +
+                " -u" + username + " -p" + password + " --set-charset=UTF8 --column-statistics=0 " + databaseName+" "+tableName;
+        backup(instruct,sqlFileName);
+    }
+
+    private void backup(String instruct,String sqlFileName){
+        String sqlFilePath = LocalConfig.getValue("file.path.detabasebackup");
+        File saveFile = new File(sqlFilePath);
         if (!saveFile.exists()) {// 如果目录不存在
             saveFile.mkdirs();// 创建文件夹
         }
-        if (!savePath.endsWith(File.separator)) {
-            savePath = savePath + File.separator;
+        if (!sqlFilePath.endsWith(File.separator)) {
+            sqlFilePath = sqlFilePath + File.separator;
         }
         PrintWriter printWriter = null;
         BufferedReader bufferedReader = null;
-        String instruct = LocalConfig.getValue("file.path.mysqldump")+"mysqldump -h101.200.132.222 -p3306 " +
-                "-uroot -pmymxdxy!@# --set-charset=UTF8 --column-statistics=0 --databases " + databaseName;
-//        String[] instruct = new String[]{"cmd","/C","mysqldump -h101.200.132.222 -p3306 -uroot -pmymxdxy!@# " +
-//                "--set-charset=UTF8 --column-statistics=0 --databases " + databaseName};
-//        String[] instruct = new String[]{"cmd", "/C", instruct1};
         try {
-            printWriter = new PrintWriter(new OutputStreamWriter(new FileOutputStream(savePath + "test.sql"), "utf8"));
+            printWriter = new PrintWriter(new OutputStreamWriter(new FileOutputStream(sqlFilePath + sqlFileName), "utf8"));
             Process process = Runtime.getRuntime().exec(instruct);
             bufferedReader = new BufferedReader(new InputStreamReader(process.getInputStream(), "utf8"));
             String line;
@@ -50,9 +73,5 @@ public class TableService implements ITableService {
             }
             printWriter.close();
         }
-    }
-
-    public void tableBackup() {
-
     }
 }
