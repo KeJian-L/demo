@@ -60,6 +60,9 @@ public interface TableMapper {
             "</script>")
     void createTable(@Param("table") Table table);
 
+    @Update("create database if not exists ${databaseName} default character set utf8 collate utf8_bin")
+    void createDatabase(String databaseName);
+
     @Update("drop database ${databaseName}")
     void deleteDatabase(String databaseName);
 

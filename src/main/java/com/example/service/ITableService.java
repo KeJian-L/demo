@@ -26,6 +26,8 @@ public interface ITableService {
 
     void createTable(@Param("table") Table table);
 
+    void createDatabase(String databaseName);
+
     void deleteDatabase(String databaseName);
 
     void deleteTable(String databaseName,String tableName);

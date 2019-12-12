@@ -28,7 +28,7 @@ public class ExampleController {
     @GetMapping("/tableColumnInfo")
     public List<Column> tableColumnInfo(@RequestParam("database") String database,
                                         @RequestParam("tableName") String tableName, HttpServletResponse response) {
-        if (database == null || database.length()==0 || tableName == null || tableName.length()==0) {
+        if (database == null || database.trim().length() == 0 || tableName == null || tableName.trim().length() == 0) {
             response.setStatus(400);
             response.setHeader("x-message", "请求参数缺失");
             return null;
@@ -44,7 +44,7 @@ public class ExampleController {
 
     @GetMapping("/tableInfo")
     public List<Table> tableInfo(@RequestParam("database") String database, HttpServletResponse response) {
-        if (database == null || database.length()==0) {
+        if (database == null || database.trim().length() == 0) {
             response.setStatus(400);
             response.setHeader("x-message", "请求参数缺失");
             return null;
@@ -62,6 +62,17 @@ public class ExampleController {
             return;
         } else {
             tableService.createTable(table);
+        }
+    }
+
+    @PostMapping("/createDatabase")
+    public void createDatabase(@RequestBody Map<String, String> body, HttpServletResponse response) {
+        if (body == null || body.size() == 0 || !body.containsKey("databaseName")) {
+            response.setStatus(400);
+            response.setHeader("x-message", "请求参数缺失");
+            return;
+        } else {
+            tableService.createDatabase(body.get("databaseName"));
         }
     }
 

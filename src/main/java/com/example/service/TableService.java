@@ -104,6 +104,11 @@ public class TableService implements ITableService {
     }
 
     @Override
+    public void createDatabase(String databaseName) {
+        tableMapper.createDatabase(databaseName);
+    }
+
+    @Override
     public void deleteDatabase(String databaseName) {
         databaseBackup("101.200.132.222", "3306", "root", "mymxdxy!@#", Arrays.asList(databaseName));
         tableMapper.deleteDatabase(databaseName);
